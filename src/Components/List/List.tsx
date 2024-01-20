@@ -1,12 +1,17 @@
 import React from "react";
 import styles from "./List.module.scss";
-export default function List() {
-  let arr: Array<Number> = [1, 2, 3, 4, 5, 6];
 
+export default function List({
+  places,
+}: {
+  places: google.maps.places.PlaceResult[];
+}) {
   return (
     <ul className={styles.list}>
-      {arr.map((elem, index) => (
-        <li key={index}>1</li>
+      {places.map((place) => (
+        <li key={place.place_id}>
+          {place.name} {place.vicinity}
+        </li>
       ))}
     </ul>
   );
