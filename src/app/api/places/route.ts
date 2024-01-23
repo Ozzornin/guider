@@ -1,3 +1,4 @@
+import { kMaxLength } from "buffer";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -9,19 +10,22 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const { sw, nw } = bounds;
+    const { ne, sw } = bounds;
+    console.log(bounds);
+    console.log(location);
     const { lat, lng } = location;
     const baseUrl =
       "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
 
     const requestBody = {
-      location: `${lat},${lng}`,
-      bounds: `${sw.lat},${sw.lng},${nw.lat},${nw.lng}`,
+      location: `${lng},${lat}`,
+      bounds: `${ne.lat},${ne.lng},${sw.lat},${sw.lng}`,
       type: type,
       radius: "200",
     };
     const params = `&location=${requestBody.location}&radius=20000&bounds=${requestBody.bounds}&type=${type}`;
     const url = `${baseUrl}?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}${params}`;
+
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -31,6 +35,7 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
+    console.log(data);
     return NextResponse.json(data);
   } catch (error) {
     console.error("Error: ", error);

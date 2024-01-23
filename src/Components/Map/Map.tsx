@@ -1,55 +1,37 @@
-// "use client";
+"use client";
 
-// import React, { useState } from "react";
-// import GoogleMapReact, { Coords } from "google-map-react";
-// import GoogleMap from "google-maps-react-markers";
-// import styles from "./map.module.scss";
-// import Bounds from "@/types/bounds";
+import React, { ReactElement, useRef, useState } from "react";
+import GoogleMap, { LatLngBounds } from "google-maps-react-markers";
 
-// export default function Map({
-//   handleMapChange,
-//   places,
-//   children,
-// }: {
-//   handleMapChange: (bounds: Bounds, center: GoogleMapReact.Coords) => void;
-//   places: google.maps.places.PlaceResult[];
-//   children: any;
-// }) {
-//   const [zoom, setZoom] = useState(14);
-//   const [center, setCenter] = useState({
-//     lat: 50.0165804,
-//     lng: 29.0192741,
-//   });
+import Marker from "./Marker";
+import Bounds from "@/types/bounds";
+import { Coords } from "google-map-react";
 
-//   const key = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string;
-//   // places?.map((place) => {
-//   //   console.log(place.geometry?.location);
-//   // });
-//   console.log(places);
-//   return (
-//     <GoogleMap
-//       style={{ position: "relative", width: "100%", height: "100%" }}
-//       //bootstrapURLKeys={{ key: key }}
-//       apiKey={key};
-//       defaultCenter={{
-//         lat: 50.0165804,
-//         lng: 29.0192741,
-//       }}
-//       //center={center}
-//       defaultZoom={14}
-//       //zoom={zoom}
-//       //margin={[50, 50, 50, 50]}
-//       options={undefined}
-//       //resetBoundsOnResize={true}
-//       // onChange={(e) => {
-//       //   if (e.zoom >= 13) handleMapChange(e.bounds, e.center);
-//       //   setZoom(e.zoom);
-//       //   setCenter(e.center);
-//       // }}
-//       //onChange={(e) => console.log(e)}
-//       //onChildClick={undefined}
-//     >
-//       {children}
-//     </GoogleMap>
-//   );
-// }
+export default function NewMap({
+  children,
+  handleMapChange,
+}: {
+  children: React.ReactNode;
+  handleMapChange: (bounds: LatLngBounds, center: Coords) => void;
+}) {
+  return (
+    <>
+      <GoogleMap
+        apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
+        defaultCenter={{ lat: 50.017812214010206, lng: 29.02477139489581 }}
+        defaultZoom={14}
+        options={undefined}
+        mapMinHeight="90vh"
+        onChange={(map) => {
+          if (map.zoom > 13)
+            handleMapChange(map.bounds, {
+              lat: map.center[0],
+              lng: map.center[1],
+            } as Coords);
+        }}
+      >
+        {children}
+      </GoogleMap>
+    </>
+  );
+}
