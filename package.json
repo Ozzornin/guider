@@ -18,14 +18,16 @@
     "google-map-react": "^2.2.1",
     "google-maps-react-markers": "^2.0.8",
     "mapbox-gl": "^3.1.0",
+    "mysql2": "^3.8.0",
     "next": "14.0.4",
+    "next-auth": "^5.0.0-beta.5",
     "react": "^18",
     "react-dom": "^18",
     "react-map-gl": "^7.1.7",
     "sass": "^1.69.7"
   },
   "devDependencies": {
-    "@types/node": "^20",
+    "@types/node": "^20.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",

@@ -70,8 +70,8 @@ export default function Home() {
         <List places={places}></List>
       </div>
       <div className={styles.map}>
-        {/* <MapGL></MapGL> */}
-        <NewMap handleMapChange={handleMapChange}>
+        <MapGL></MapGL>
+        {/* <NewMap handleMapChange={handleMapChange}>
           {places.map((place) => (
             <Marker
               key={place.place_id}
@@ -82,7 +82,7 @@ export default function Home() {
               photoRef={place.photos}
             />
           ))}
-        </NewMap>
+        </NewMap> */}
       </div>
     </div>
   );
