@@ -1,14 +1,18 @@
 .header {
   height: 10vh;
   background-color: hsl(0, 0%, 30%);
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 3fr 9fr;
+  color: white;
 
   h1 {
     position: relative;
-    top: 50%;
-    transform: translateY(-50%);
     left: 5%;
     font-size: 5vmin;
+  }
+  .nav {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto;
   }
 }

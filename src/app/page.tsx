@@ -15,7 +15,6 @@ import MapGL from "@/Components/Map/MapGL";
 export default function Home() {
   const [places, setPlaces] = useState<google.maps.places.PlaceResult[]>([]);
   const [bounds, setBounds] = useState(null);
-
   async function handleMapChange(
     bounds: LatLngBounds,
     center: GoogleMapReact.Coords
@@ -45,19 +44,6 @@ export default function Home() {
 
     const data = await response.json();
     setPlaces(data.results);
-    // if (data.next_page_token) {
-    //   setTimeout(async () => {
-    //     const response = await fetch(baseUrl, {
-    //       method: "POST",
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //       },
-    //       body: JSON.stringify({ nextPageToken: data.next_page_token }),
-    //     });
-    //     const newData = await response.json();
-    //     setPlaces((prevPlaces) => [...prevPlaces, ...newData.results]);
-    //   }, 2000);
-    // }
   }
   const position = {
     lat: 50.0165804,
@@ -71,18 +57,6 @@ export default function Home() {
       </div>
       <div className={styles.map}>
         <MapGL></MapGL>
-        {/* <NewMap handleMapChange={handleMapChange}>
-          {places.map((place) => (
-            <Marker
-              key={place.place_id}
-              lat={Number(place.geometry?.location?.lat)}
-              lng={Number(place.geometry?.location?.lng)}
-              markerId={place.name as string}
-              draggable={false}
-              photoRef={place.photos}
-            />
-          ))}
-        </NewMap> */}
       </div>
     </div>
   );

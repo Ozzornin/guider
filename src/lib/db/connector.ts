@@ -13,7 +13,7 @@ export default async function Connect() {
       database: process.env.NEXT_PUBLIC_MYSQL_DATABASE,
     });
   } catch (e) {
-    console.log(e);
+    console.log("here");
   }
 
   return connection;
