@@ -1,18 +1,16 @@
 import React from "react";
 import styles from "./List.module.scss";
 
-export default function List({
-  places,
-}: {
-  places: google.maps.places.PlaceResult[];
-}) {
+export default function List({ places }: { places: any | null }) {
   return (
-    <ul className={styles.list}>
-      {places.map((place) => (
-        <li key={place.place_id}>
-          {place.name} {place.vicinity}
-        </li>
-      ))}
-    </ul>
+    <>
+      <ul>
+        {places?.map((place) => (
+          <li key={place?.properties.xid}>
+            <h1>{place?.properties.name}</h1>
+          </li>
+        ))}
+      </ul>
+    </>
   );
 }

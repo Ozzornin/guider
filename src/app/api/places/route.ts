@@ -1,31 +1,19 @@
-import { kMaxLength } from "buffer";
+import { LngLatBounds } from "mapbox-gl";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const { bounds, type, location, nextPageToken } = await req.json();
-
-  if (nextPageToken) {
-    const nextPageData = await fetchNextPage(nextPageToken);
-    return NextResponse.json(nextPageData);
-  }
-
+  console.log(1);
+  const { bounds, placeTypes }: { bounds: LngLatBounds; placeTypes: String[] } =
+    await req.json();
+  const placeTypes1 = ["architecture", "cultural", "historic"];
   try {
-    const { ne, sw } = bounds;
-    console.log(bounds);
-    console.log(location);
-    const { lat, lng } = location;
-    const baseUrl =
-      "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-
-    const requestBody = {
-      location: `${lng},${lat}`,
-      bounds: `${ne.lat},${ne.lng},${sw.lat},${sw.lng}`,
-      type: type,
-      radius: "200",
-    };
-    const params = `&location=${requestBody.location}&radius=20000&bounds=${requestBody.bounds}&type=${type}`;
-    const url = `${baseUrl}?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}${params}`;
-
+    const baseUrl = "https://api.opentripmap.com/0.1/en/places/bbox";
+    const params = `&lon_min=${bounds._sw.lng}&lat_min=${
+      bounds._sw.lat
+    }&lon_max=${bounds._ne.lng}&lat_max=${
+      bounds._ne.lat
+    }&kinds=${placeTypes1.join(",")}&lan=en`;
+    const url = `${baseUrl}?apikey=${process.env.NEXT_PUBLIC_OTM_API_KEY}${params}`;
     const response = await fetch(url, {
       method: "GET",
       headers: {
@@ -35,29 +23,9 @@ export async function POST(req: NextRequest) {
     });
 
     const data = await response.json();
-    console.log(data);
-    return NextResponse.json(data);
+    return NextResponse.json(data.features);
   } catch (error) {
     console.error("Error: ", error);
     return NextResponse.error();
-  }
-}
-
-async function fetchNextPage(token: string) {
-  const baseUrl =
-    "https://maps.googleapis.com/maps/api/place/nearbysearch/json";
-  const url = `${baseUrl}?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&pagetoken=${token}`;
-  try {
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    return error;
   }
 }
