@@ -1,6 +1,15 @@
-type PlaceInfo = {
+type properties = {
   xid: string; // Unique identifier of the object in OpenTripMap
   name: string; // The name of the object
+  address?: {
+    city?: string;
+    state?: string;
+    county?: string;
+    suburb?: string;
+    country?: string;
+    country_code?: string;
+    neighbourhood?: string;
+  };
   kinds?: string; // Comma-separated list of categories. see List of categories
   osm?: string; // OpenStreetMap identifier of the object
   wikidata?: string; // Wikidata identifier of the object
@@ -54,4 +63,4 @@ type PlaceInfo = {
   };
 };
 
-export default PlaceInfo;
+export default properties;

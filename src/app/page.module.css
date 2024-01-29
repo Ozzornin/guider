@@ -11,5 +11,7 @@
 }
 
 .sidebar {
-  background-color: white;
+  position: relative;
+  background-color: wheat;
+  height: 90vh;
 }

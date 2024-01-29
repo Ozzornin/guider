@@ -1,3 +1,4 @@
+import { kMaxLength } from "buffer";
 import { LngLatBounds } from "mapbox-gl";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -8,8 +9,8 @@ export async function POST(req: NextRequest) {
   const placeTypes1 = ["architecture", "cultural", "historic"];
   try {
     const baseUrl = "https://api.opentripmap.com/0.1/en/places/bbox";
-    const params = `&lon_min=${bounds._sw.lng}&lat_min=${
-      bounds._sw.lat
+    const params = `&lon_min=${bounds._sw?.lng}&lat_min=${
+      bounds._sw?.lat
     }&lon_max=${bounds._ne.lng}&lat_max=${
       bounds._ne.lat
     }&kinds=${placeTypes1.join(",")}&lan=en`;

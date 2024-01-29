@@ -3,6 +3,7 @@ import React, { Dispatch, MutableRefObject, useRef } from "react";
 import { LngLatBounds, Map, MapRef, Marker } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import feature from "@/types/OpenTripMap/feature";
+import styles from "./map.module.scss";
 
 export default function MapGL({
   initCoords,
@@ -18,11 +19,12 @@ export default function MapGL({
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
       mapLib={import("mapbox-gl")}
       initialViewState={{
-        zoom: 14,
+        zoom: 17,
         longitude: initCoords.lng,
         latitude: initCoords.lat,
       }}
       mapStyle="mapbox://styles/matt-coop/clrp7tgqf008z01pefpxjeplm"
+      onLoad={(e) => setBounds(e.target.getBounds())}
       onMoveEnd={(e) => {
         const bounds: LngLatBounds = e.target.getBounds();
         if (e.viewState.zoom > 14)
@@ -45,8 +47,12 @@ export default function MapGL({
           longitude={place.geometry.coordinates[0]}
           draggable={false}
         >
-          <p>{place.properties.name}</p>
-          <div>🌴</div>
+          <div className={styles.customMarker}>
+            <p>
+              {place.properties.name}
+              <b>({place.properties.xid})</b>
+            </p>
+          </div>
         </Marker>
       ))}
     </Map>
