@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <div className={styles.main}>
       <Paper className={styles.sidebar}>
-        <List places={places}></List>
+        {/* <List places={places}></List> */}
       </Paper>
       <div className={styles.map}>
         <MapGL

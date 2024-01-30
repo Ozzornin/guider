@@ -14,7 +14,6 @@ import {
   Typography,
 } from "@mui/material";
 import Image from "next/image";
-import { relative } from "path";
 import React, { useEffect, useState } from "react";
 
 export default function ListItem({
@@ -103,8 +102,8 @@ export default function ListItem({
               ) : !errorImage ? (
                 <Skeleton
                   variant="rectangular"
-                  width={210}
-                  height={118}
+                  width={100}
+                  height={120}
                   animation="wave"
                 />
               ) : (
