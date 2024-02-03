@@ -1,11 +1,11 @@
+import feature from "@/types/OpenTripMap/feature";
 import { LngLatBounds } from "mapbox-gl";
 import { useEffect, useState } from "react";
 
 export default function usePlaces() {
-  const [places, setPlaces] = useState<any>();
+  const [places, setPlaces] = useState<feature[]>([]);
   const [bounds, setBounds] = useState<LngLatBounds>();
   const [placeType, setPlaceType] = useState<String[]>([]);
-
   useEffect(() => {
     async function getPlaces(bounds: any, placeTypes: String[] | undefined) {
       const baseUrl = "http://localhost:3000/api/places";

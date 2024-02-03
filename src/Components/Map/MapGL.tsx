@@ -11,22 +11,23 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import feature from "@/types/OpenTripMap/feature";
 import styles from "./map.module.scss";
 import useSupercluster from "use-supercluster";
-import { height } from "@mui/system";
-import pin from "@/app/location-pin.svg";
-import { Badge } from "@mui/material";
-import Image from "next/image";
 
 export default function MapGL({
-  initCoords,
+  //initCoords,
   setBounds,
   places,
+  mapRef,
 }: {
-  initCoords: any;
+  //initCoords: any;
   setBounds: Dispatch<LngLatBounds>;
-  places: feature[];
+  places: feature[] | null;
+  mapRef: MutableRefObject<MapRef | null>;
 }) {
-  const mapRef = useRef<MapRef | null>(null);
-  const [mapZoom, setMapZoom] = useState<number>(17);
+  const [viewPort, setViewPort] = useState<any>({
+    zoom: 17,
+    longitude: 29.02477139489581,
+    latitude: 50.017812214010206,
+  });
   const bounds = mapRef.current
     ? mapRef.current.getMap().getBounds().toArray().flat()
     : null;
@@ -44,10 +45,9 @@ export default function MapGL({
 
   const handleMoveEnd = (e: ViewStateChangeEvent) => {
     const bounds: LngLatBounds = e.target.getBounds();
-    setMapZoom(e.target.getZoom());
-    if (e.viewState.zoom > 10)
+    setViewPort((old) => ({ ...old, zoom: e.target.getZoom() }));
+    if (e.viewState.zoom >= 10)
       setBounds((old: LngLatBounds) => {
-        // return bounds;
         if (
           old._sw.lat < bounds._sw.lat &&
           old._sw.lng < bounds._sw.lng &&
@@ -61,76 +61,86 @@ export default function MapGL({
 
   const { clusters, supercluster } = useSupercluster({
     points,
-    // zoom: mapRef?.current?.getZoom() as number,
-    zoom: mapZoom,
+    zoom: viewPort.zoom,
     bounds,
-    options: { radius: 75, maxZoom: 20 },
+    options: { radius: 100, maxZoom: 20 },
   });
   return (
     <Map
+      initialViewState={...viewPort}
       ref={mapRef}
       mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_API_KEY}
       mapLib={import("mapbox-gl")}
-      initialViewState={{
-        zoom: mapZoom,
-        longitude: initCoords.lng,
-        latitude: initCoords.lat,
-      }}
-      maxZoom={20}
+      maxZoom={21}
       minZoom={10}
       mapStyle="mapbox://styles/matt-coop/clrp7tgqf008z01pefpxjeplm"
       onLoad={(e) => setBounds(e.target.getBounds())}
       onMoveEnd={handleMoveEnd}
     >
-      {clusters?.map((cluster) => {
-        const [longitude, latitude] = cluster.geometry.coordinates;
-        const { cluster: isCluster, point_count: pointCount } =
-          cluster.properties;
+      {places &&
+        clusters?.map((cluster) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const { cluster: isCluster, point_count: pointCount } =
+            cluster.properties;
 
-        if (isCluster) {
+          if (isCluster) {
+            return (
+              <Marker
+                key={cluster.properties.placeId}
+                latitude={latitude}
+                longitude={longitude}
+              >
+                <div
+                  className={styles.customCluster}
+                  style={{
+                    width: `${(5 + (20 * pointCount) / places?.length) * 10}px`,
+                    height: `${
+                      (5 + (20 * pointCount) / places?.length) * 10
+                    }px`,
+                  }}
+                  onClick={() => {
+                    const coords = cluster.geometry.coordinates as [
+                      number,
+                      number
+                    ];
+                    const id = Number(cluster.id);
+                    const zoomInto = Math.min(
+                      Number(supercluster?.getClusterExpansionZoom(id)),
+                      20
+                    );
+                    //mapRef.current?.setCenter(coords);
+
+                    mapRef.current?.flyTo({
+                      center: coords,
+                      animate: true,
+                      duration: 1000,
+                      zoom: zoomInto,
+                      essential: true,
+                    });
+                  }}
+                >
+                  {pointCount}
+                </div>
+              </Marker>
+            );
+          }
+
           return (
             <Marker
               key={cluster.properties.placeId}
               latitude={latitude}
               longitude={longitude}
+              draggable={false}
             >
-              <div
-                className={styles.customCluster}
-                style={{
-                  width: `${(5 + (20 * pointCount) / places?.length) * 10}px`,
-                  height: `${(5 + (20 * pointCount) / places?.length) * 10}px`,
-                }}
-                // onClick={() => {
-                //   const id = Number(cluster.id);
-                //   const zoomInto = Math.min(
-                //     Number(supercluster?.getClusterExpansionZoom(id)),
-                //     20
-                //   );
-                //   mapRef.current?.zoomIn();
-                // }}
-              >
-                {pointCount}
+              <div className={styles.customMarker}>
+                <p>
+                  {cluster.properties.placeName}
+                  <b>({cluster.properties.placeId})</b>
+                </p>
               </div>
             </Marker>
           );
-        }
-
-        return (
-          <Marker
-            key={cluster.properties.placeId}
-            latitude={latitude}
-            longitude={longitude}
-            draggable={false}
-          >
-            <div className={styles.customMarker}>
-              <p>
-                {cluster.properties.placeName}
-                <b>({cluster.properties.placeId})</b>
-              </p>
-            </div>
-          </Marker>
-        );
-      })}
+        })}
     </Map>
   );
 }

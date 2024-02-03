@@ -4,9 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   console.log(1);
-  const { bounds, placeTypes }: { bounds: LngLatBounds; placeTypes: String[] } =
+  const {
+    bounds,
+    placeTypes,
+  }: { bounds: LngLatBounds | undefined; placeTypes: String[] } =
     await req.json();
   const placeTypes1 = ["architecture", "cultural", "historic"];
+
+  if (!bounds) return NextResponse.json([]);
+
   try {
     const baseUrl = "https://api.opentripmap.com/0.1/en/places/bbox";
     const params = `&lon_min=${bounds._sw?.lng}&lat_min=${

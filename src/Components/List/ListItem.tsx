@@ -17,11 +17,13 @@ import Image from "next/image";
 import React, { useEffect, useState } from "react";
 
 export default function ListItem({
+  onClick,
   xid,
   timeout,
 }: {
   xid: string;
   timeout: number;
+  onClick: () => void;
 }) {
   const [isLoading, setIsLoadig] = useState<boolean>(true);
   const [image, setImage] = useState<string | null>("");
@@ -72,6 +74,7 @@ export default function ListItem({
   return (
     <>
       <Card
+        onClick={onClick}
         style={{
           margin: 10,
           border: "1px solid #ccc",
@@ -91,12 +94,12 @@ export default function ListItem({
                   width={0}
                   height={0}
                   sizes="100dvh"
-                  objectFit="contain"
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
                     width: "auto",
                     height: "auto",
+                    objectFit: "contain",
                   }}
                 />
               ) : !errorImage ? (
@@ -120,7 +123,7 @@ export default function ListItem({
                       align="center"
                       style={{ marginBottom: 10, fontSize: "1.2rem" }}
                     >
-                      {properties?.name}
+                      {properties?.name || "Unknown place"}
                     </Typography>
                     <Typography>
                       {properties?.address?.country},{" "}

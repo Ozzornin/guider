@@ -24,6 +24,8 @@
     "next": "14.0.4",
     "react": "^18",
     "react-dom": "^18",
+    "react-infinite-scroll-component": "^6.1.0",
+    "react-intersection-observer": "^9.5.4",
     "react-map-gl": "^7.1.7",
     "sass": "^1.69.7",
     "supercluster": "^8.0.1",
