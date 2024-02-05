@@ -8,8 +8,9 @@ export function getJwtSecretKey() {
   return new TextEncoder().encode(secret);
 }
 
-export async function verifyJwtToken(token: string | Uint8Array) {
+export async function verifyJwtToken(token: string | Uint8Array | undefined) {
   try {
+    if (!token) return null;
     const { payload } = await jwtVerify(token, getJwtSecretKey());
     return payload;
   } catch (e) {

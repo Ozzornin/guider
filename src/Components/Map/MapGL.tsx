@@ -45,7 +45,7 @@ export default function MapGL({
 
   const handleMoveEnd = (e: ViewStateChangeEvent) => {
     const bounds: LngLatBounds = e.target.getBounds();
-    setViewPort((old) => ({ ...old, zoom: e.target.getZoom() }));
+    setViewPort((old: any) => ({ ...old, zoom: e.target.getZoom() }));
     if (e.viewState.zoom >= 10)
       setBounds((old: LngLatBounds) => {
         if (
@@ -108,7 +108,6 @@ export default function MapGL({
                       Number(supercluster?.getClusterExpansionZoom(id)),
                       20
                     );
-                    //mapRef.current?.setCenter(coords);
 
                     mapRef.current?.flyTo({
                       center: coords,

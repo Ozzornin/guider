@@ -6,8 +6,6 @@ import { Stack } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import { MapRef } from "react-map-gl";
 
-// TODO: придумати  як змістити offset до останнього спільного елементу
-
 export default function List({
   places,
   mapRef,
@@ -17,21 +15,21 @@ export default function List({
 }) {
   const [offset, setOffset] = useState<number>(0);
   const [ref, inView] = useInView({ triggerOnce: false });
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   useEffect(() => {
     const getNext = () => {
       if (inView) {
         if (places?.length > offset) setOffset((old) => old + 10);
       }
+      setIsLoading(false);
     };
-    getNext();
+    setIsLoading(true);
+    setTimeout(getNext, 1000);
   }, [inView]);
 
   useEffect(() => {
     setOffset(10);
   }, [places]);
-
-  console.log(offset);
   return (
     <Stack
       spacing={1}
@@ -50,8 +48,6 @@ export default function List({
               timeout={0}
               onClick={() => {
                 mapRef.current?.flyTo({
-                  //curve: 5.1,
-                  //speed: 10,
                   maxDuration: 3000,
                   screenSpeed: 0.1,
                   center: place.geometry.coordinates,
@@ -66,11 +62,8 @@ export default function List({
         );
       })}
       <div ref={ref} style={{ width: "100%" }}>
-        1
+        {isLoading ? "Loading..." : "Loaded"}
       </div>
     </Stack>
   );
-}
-{
-  /* <ListItem key={place.id} xid={place.properties.xid}></ListItem>) */
 }
